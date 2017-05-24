@@ -15,23 +15,23 @@ type Laravel struct {
 	}
 }
 
-func (Laravel) Identifier() string {
-	return "laravel"
-}
-
-func (f Laravel) Detect(repo repository.Repository) int {
-	hasComposer := Composer{}.Detect(repo) >= 100
-	if !hasComposer {
-		return 0
+func (f Laravel) Detect(repo repository.Repository, resultChannel chan Result) {
+	result := Result{
+		Identifier: "laravel",
+		Score:      0,
+	}
+	if !hasComposer(repo) {
+		resultChannel <- result
+		return
 	}
 
 	f.getComposer(repo)
 
 	if f.composer.Require.Laravel != "" {
-		return 100
+		result.Score = 100
 	}
 
-	return 0
+	resultChannel <- result
 }
 
 func (f *Laravel) getComposer(repo repository.Repository) {

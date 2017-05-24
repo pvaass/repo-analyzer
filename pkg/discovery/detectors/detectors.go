@@ -7,8 +7,7 @@ import (
 var collection []Detector
 
 type Detector interface {
-	Identifier() string
-	Detect(repo repository.Repository) int
+	Detect(repo repository.Repository, resultChannel chan Result)
 }
 
 type Result struct {
@@ -17,9 +16,13 @@ type Result struct {
 }
 
 func Run(repo repository.Repository) []Result {
-	var results []Result
+	resultChannel := make(chan Result)
 	for _, detector := range collection {
-		results = append(results, Result{detector.Identifier(), detector.Detect(repo)})
+		go detector.Detect(repo, resultChannel)
+	}
+	var results []Result
+	for i := 0; i < len(collection); i++ {
+		results = append(results, <-resultChannel)
 	}
 	return results
 }

@@ -1,6 +1,9 @@
 package detectors
 
 import (
+	"encoding/json"
+	"log"
+
 	"github.com/pvaass/repo-analyzer/pkg/repository"
 )
 
@@ -24,6 +27,18 @@ func hasComposer(repo repository.Repository) bool {
 	}
 
 	return false
+}
+
+func composerRequiresPackage(file []byte, packageName string) bool {
+	var composer struct {
+		Require map[string]string
+	}
+	err := json.Unmarshal(file, &composer)
+	if err != nil {
+		log.Panic("Invalid Json Decode", err)
+	}
+	_, ok := composer.Require[packageName]
+	return ok
 }
 
 func init() {

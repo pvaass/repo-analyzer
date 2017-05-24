@@ -13,6 +13,7 @@ type Platform interface {
 type File struct {
 	Name        string
 	DownloadURI string
+	Content     []byte
 }
 
 func (ps Platforms) ForURI(uri string) Platform {

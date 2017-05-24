@@ -16,6 +16,15 @@ type Result struct {
 }
 
 func Run(repo repository.Repository) []Result {
+
+	if hasComposer(repo) {
+		repo.File("composer.json")
+	}
+
+	if hasNpm(repo) {
+		repo.File("package.json")
+	}
+
 	resultChannel := make(chan Result)
 	for _, detector := range collection {
 		go detector.Detect(repo, resultChannel)

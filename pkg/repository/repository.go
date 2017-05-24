@@ -21,16 +21,21 @@ func (r Repository) FileNames() []string {
 	return names
 }
 
-func (r Repository) File(name string) []byte {
-	for _, file := range r.Files {
+func (r *Repository) File(name string) []byte {
+	for index, file := range r.Files {
 		if name == file.Name {
-			return download(file.DownloadURI)
+			if len(file.Content) == 0 {
+				file.Content = download(file.DownloadURI)
+				r.Files[index] = file
+			}
+			return file.Content
 		}
 	}
 	panic("No such file")
 }
 
 func download(url string) []byte {
+	log.Println("Downloading " + url)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		panic(err)

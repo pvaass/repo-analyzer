@@ -43,3 +43,7 @@ func (f *Symfony) getComposer(repo repository.Repository) {
 	}
 
 }
+
+func init() {
+	register(Symfony{})
+}

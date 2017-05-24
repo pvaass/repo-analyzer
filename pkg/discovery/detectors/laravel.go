@@ -43,3 +43,7 @@ func (f *Laravel) getComposer(repo repository.Repository) {
 	}
 
 }
+
+func init() {
+	register(Laravel{})
+}

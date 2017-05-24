@@ -19,3 +19,7 @@ func (d Composer) Detect(repo repository.Repository) int {
 
 	return 0
 }
+
+func init() {
+	register(Composer{})
+}

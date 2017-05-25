@@ -1,27 +1,27 @@
 {
     "rules": [
         {
-            "name": "composer",
+            "name": "php-composer",
             "args": ["composer.json", "app/composer.json"],
             "strg": "file-exist"
         },
         {
-            "name": "php-symfony",
+            "name": "php-framework-symfony",
             "args": ["symfony/symfony"],
             "strg": "composer#d"
         },
         {
-            "name": "php-laravel",
+            "name": "php-framework-laravel",
             "args": ["laravel/framework"],
             "strg": "composer#d"
         },
         {
-            "name": "php-cakephp",
+            "name": "php-framework-cakephp",
             "args": ["cakephp/cakephjp"],
             "strg": "composer#d"
         },
         {
-            "name": "php-slim",
+            "name": "php-framework-slim",
             "args": ["slim/slim"],
             "strg": "composer#d"
         }

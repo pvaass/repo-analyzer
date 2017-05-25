@@ -1,27 +1,27 @@
 {
     "rules": [
         {
-            "name": "npm",
+            "name": "js-npm",
             "args": ["package.json", "app/package.json"],
             "strg": "file-exist"
         },
         {
-            "name": "js-react",
+            "name": "js-framework-react",
             "args": ["react"],
             "strg": "npm#d"
         },
         {
-            "name": "js-express",
+            "name": "js-framework-express",
             "args": ["express"],
             "strg": "npm#d"
         },
         {
-            "name": "js-angular",
+            "name": "js-framework-angular",
             "args": ["angular"],
             "strg": "npm#d"
         },
         {
-            "name": "js-vue",
+            "name": "js-framework-vue",
             "args": ["vue"],
             "strg": "npm#d"
         }

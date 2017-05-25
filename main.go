@@ -34,7 +34,11 @@ func main() {
 		fmt.Println("No rules found in configured directory " + viper.GetString("rules.path") + ", exiting.")
 		os.Exit(1)
 	}
-	analyze.Run(repository, rules)
+
+	results := analyze.Run(repository, rules)
+	for _, result := range results {
+		fmt.Println(fmt.Sprintf("%s: %d", result.Identifier, result.Score))
+	}
 }
 
 func initConfig() {

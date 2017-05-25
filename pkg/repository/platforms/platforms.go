@@ -1,5 +1,7 @@
 package platforms
 
+import "errors"
+
 type Platforms struct {
 	collection []Platform
 }
@@ -17,15 +19,17 @@ type File struct {
 	Content     []byte
 }
 
-func (ps Platforms) ForURI(uri string) Platform {
+func (ps Platforms) ForURI(uri string) (Platform, error) {
 	for _, platform := range ps.collection {
 		if platform.SupportsURI(uri) {
-			return platform
+			return platform, nil
 		}
 	}
-	panic("No platform!")
+	return ps.collection[0], errors.New("No supported platforms for uri \"" + uri + "\".")
 }
 
-func (ps *Platforms) Add(p Platform) {
-	ps.collection = append(ps.collection, p)
+func (ps *Platforms) Add(p ...Platform) {
+	for _, platform := range p {
+		ps.collection = append(ps.collection, platform)
+	}
 }

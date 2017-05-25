@@ -18,33 +18,54 @@ func main() {
 		panic(fmt.Errorf("missing arg 'repo'"))
 	}
 
-	platforms := getPlatforms()
-	platform := platforms.ForURI(os.Args[1])
+	platformCollection := getPlatforms()
+
+	platform, err := platformCollection.ForURI(os.Args[1])
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 	repository := repository.New(platform, os.Args[1])
+
 	analyze.Run(repository)
 }
 
 func initConfig() {
 	viper.SetConfigName("config")
+	viper.AddConfigPath("/etc/repo-analyzer")
+	viper.AddConfigPath("$HOME/.repo-analyzer")
 	viper.AddConfigPath(".")
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(fmt.Errorf("fatal error while reading the config file: %s", err))
 	}
 
-	if !viper.IsSet("github.token") {
-		log.Println("No github token set. Will not use github as repository source.")
+	viper.SetDefault("github.enable", true)
+	viper.SetDefault("bitbucket.enable", true)
+
+	if viper.GetBool("github.enable") && !viper.IsSet("github.token") {
+		log.Fatal("GitHub is enabled, but no token was configured")
 	}
 }
 
 func getPlatforms() platforms.Platforms {
-	collection := platforms.Platforms{}
-	github := &platforms.GitHub{
-		Token: viper.GetString("github.token"),
+	var enabledPlatforms []platforms.Platform
+
+	if viper.GetBool("github.enable") {
+		enabledPlatforms = append(enabledPlatforms, &platforms.GitHub{
+			Token: viper.GetString("github.token"),
+		})
+	}
+	if viper.GetBool("bitbucket.enable") {
+		enabledPlatforms = append(enabledPlatforms, &platforms.BitBucket{})
 	}
 
-	bitbucket := &platforms.BitBucket{}
-	collection.Add(github)
-	collection.Add(bitbucket)
+	if len(enabledPlatforms) < 1 {
+		fmt.Println("At least one platform needs to be enabled. Exiting.")
+		os.Exit(1)
+	}
+
+	collection := platforms.Platforms{}
+	collection.Add(enabledPlatforms...)
 	return collection
 }

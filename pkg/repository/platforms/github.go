@@ -53,7 +53,10 @@ func (g GitHub) getContentResponse(path string) *http.Response {
 	if err != nil {
 		panic(err)
 	}
-	req.Header.Set("Authorization", "token "+g.Token)
+
+	if len(g.Token) > 0 {
+		req.Header.Set("Authorization", "token "+g.Token)
+	}
 	req.Header.Set("Accept", "application/vnd.github.v3.raw")
 
 	resp, err := http.DefaultClient.Do(req)

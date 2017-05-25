@@ -1,0 +1,11 @@
+## Uncomment to disable github (default: true)
+#github.enable: false
+
+## Uncomment to access private repos with a github token
+#github.token:
+
+## Uncomment to disable bitbucket (default: true)
+#bitbucket.enable: false
+
+## Uncomment to change the path the rules are defined in (default: /etc/repo-analyzer)
+#rules.path: /etc/repo-analyzer

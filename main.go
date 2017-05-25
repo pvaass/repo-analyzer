@@ -13,6 +13,7 @@ import (
 )
 
 func main() {
+	log.SetPrefix("[repo-analyzer] ")
 	initConfig()
 
 	if len(os.Args) < 2 {
@@ -51,7 +52,7 @@ func initConfig() {
 	viper.SetDefault("rules.path", "/etc/repo-analyzer")
 
 	if viper.GetBool("github.enable") && !viper.IsSet("github.token") {
-		log.Fatal("GitHub is enabled, but no token was configured")
+		log.Println("GitHub is enabled, but no token was configured. Will not be able to access private repositories")
 	}
 }
 

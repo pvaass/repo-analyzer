@@ -1,0 +1,30 @@
+{
+    "rules": [
+        {
+            "name": "composer",
+            "args": ["composer.json", "app/composer.json"],
+            "strg": "file-exist"
+        },
+        {
+            "name": "php-symfony",
+            "args": ["symfony/symfony"],
+            "strg": "composer#d"
+        },
+        {
+            "name": "php-laravel",
+            "args": ["laravel/framework"],
+            "strg": "composer#d"
+        },
+        {
+            "name": "php-cakephp",
+            "args": ["cakephp/cakephjp"],
+            "strg": "composer#d"
+        },
+        {
+            "name": "php-slim",
+            "args": ["slim/slim"],
+            "strg": "composer#d"
+        }
+    ]
+   
+}

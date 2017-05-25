@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-
 	"os"
 
 	"github.com/pvaass/repo-analyzer/pkg/analyze"

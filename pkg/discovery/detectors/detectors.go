@@ -7,7 +7,9 @@ import (
 var collection []Detector
 
 type Detector interface {
-	Detect(repo repository.Repository, resultChannel chan Result)
+	Detect(repo repository.Repository, resultChannel chan Result, rule Rule)
+	Supports(rule Rule) bool
+	Init(repo repository.Repository)
 }
 
 type Result struct {
@@ -16,21 +18,23 @@ type Result struct {
 }
 
 func Run(repo repository.Repository) []Result {
-
-	if hasComposer(repo) {
-		getComposer(repo)
+	for _, detector := range collection {
+		detector.Init(repo)
 	}
 
-	if hasNpm(repo) {
-		getNpm(repo)
-	}
+	rules := getRules()
 
 	resultChannel := make(chan Result)
-	for _, detector := range collection {
-		go detector.Detect(repo, resultChannel)
+	for _, rule := range rules {
+		for _, detector := range collection {
+			if detector.Supports(rule) {
+				go detector.Detect(repo, resultChannel, rule)
+			}
+		}
 	}
+
 	var results []Result
-	for i := 0; i < len(collection); i++ {
+	for i := 0; i < len(rules); i++ {
 		results = append(results, <-resultChannel)
 	}
 	return results

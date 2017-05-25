@@ -1,0 +1,30 @@
+{
+    "rules": [
+        {
+            "name": "npm",
+            "args": ["package.json", "app/package.json"],
+            "strg": "file-exist"
+        },
+        {
+            "name": "js-react",
+            "args": ["react"],
+            "strg": "npm#d"
+        },
+        {
+            "name": "js-express",
+            "args": ["express"],
+            "strg": "npm#d"
+        },
+        {
+            "name": "js-angular",
+            "args": ["angular"],
+            "strg": "npm#d"
+        },
+        {
+            "name": "js-vue",
+            "args": ["vue"],
+            "strg": "npm#d"
+        }
+    ]
+   
+}

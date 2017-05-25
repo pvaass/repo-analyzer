@@ -8,6 +8,6 @@ import (
 )
 
 // Run analyzes a Repository for known languages and frameworks
-func Run(repo repository.Repository) {
-	log.Println(detectors.Run(repo))
+func Run(repo repository.Repository, rules []detectors.Rule) {
+	log.Println(detectors.Run(repo, rules))
 }

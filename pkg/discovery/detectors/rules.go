@@ -3,7 +3,6 @@ package detectors
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -19,9 +18,9 @@ type Rule struct {
 	Strategy  string   `json:"strg"`
 }
 
-func getRules() []Rule {
+func GetRules(rulesPath string) []Rule {
 	var ruleSets []RuleSet
-	filepath.Walk("./pkg/discovery/detectors/rules/", func(path string, _ os.FileInfo, err error) error {
+	filepath.Walk(rulesPath, func(path string, _ os.FileInfo, err error) error {
 		if !strings.HasSuffix(path, ".json") {
 			return nil
 		}
@@ -46,7 +45,5 @@ func getRules() []Rule {
 	for _, ruleSet := range ruleSets {
 		allRules = append(allRules, ruleSet.Rules...)
 	}
-
-	log.Print(allRules)
 	return allRules
 }

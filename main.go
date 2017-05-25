@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/pvaass/repo-analyzer/pkg/analyze"
+	"github.com/pvaass/repo-analyzer/pkg/discovery/detectors"
 	"github.com/pvaass/repo-analyzer/pkg/repository"
 	"github.com/pvaass/repo-analyzer/pkg/repository/platforms"
 	"github.com/spf13/viper"
@@ -27,7 +28,12 @@ func main() {
 	}
 	repository := repository.New(platform, os.Args[1])
 
-	analyze.Run(repository)
+	rules := detectors.GetRules(viper.GetString("rules.path"))
+	if len(rules) < 1 {
+		fmt.Println("No rules found in configured directory " + viper.GetString("rules.path") + ", exiting.")
+		os.Exit(1)
+	}
+	analyze.Run(repository, rules)
 }
 
 func initConfig() {
@@ -42,6 +48,7 @@ func initConfig() {
 
 	viper.SetDefault("github.enable", true)
 	viper.SetDefault("bitbucket.enable", true)
+	viper.SetDefault("rules.path", "/etc/repo-analyzer")
 
 	if viper.GetBool("github.enable") && !viper.IsSet("github.token") {
 		log.Fatal("GitHub is enabled, but no token was configured")

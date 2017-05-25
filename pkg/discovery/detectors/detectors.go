@@ -17,12 +17,10 @@ type Result struct {
 	Score      int
 }
 
-func Run(repo repository.Repository) []Result {
+func Run(repo repository.Repository, rules []Rule) []Result {
 	for _, detector := range collection {
 		detector.Init(repo)
 	}
-
-	rules := getRules()
 
 	resultChannel := make(chan Result)
 	for _, rule := range rules {

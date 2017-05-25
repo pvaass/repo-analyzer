@@ -18,7 +18,7 @@ func (f ComposerFrameworkDetector) Detect(repo repository.Repository, resultChan
 		return
 	}
 
-	if composerRequiresPackage(repo.File("composer.json"), f.rule.PackageName) {
+	if composerRequiresPackage(getComposer(repo), f.rule.PackageName) {
 		result.Score = 100
 	}
 
@@ -32,4 +32,6 @@ func init() {
 
 	register(create("php-symfony", "symfony/symfony"))
 	register(create("php-laravel", "laravel/framework"))
+	register(create("php-cakephp", "cakephp/cakephp"))
+	register(create("php-slim", "slim/slim"))
 }

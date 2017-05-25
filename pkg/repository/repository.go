@@ -5,33 +5,48 @@ import (
 	"log"
 	"net/http"
 
+	"path/filepath"
+
 	"github.com/pvaass/repo-analyzer/pkg/repository/platforms"
 )
 
 type Repository struct {
-	URI   string
-	Files []platforms.File
+	URI      string
+	Files    map[string][]platforms.File
+	Platform platforms.Platform
 }
 
-func (r Repository) FileNames() []string {
-	var names []string
-	for _, file := range r.Files {
-		names = append(names, file.Name)
+func (r *Repository) List(path string) []platforms.File {
+	elems, ok := r.Files[path]
+	if !ok {
+		elems = r.Platform.FileList(path)
+		r.Files[path] = elems
 	}
-	return names
+	return r.Files[path]
 }
 
 func (r *Repository) File(name string) []byte {
-	for index, file := range r.Files {
-		if name == file.Name {
+	path := filepath.Dir(name)
+	elems, ok := r.Files[path]
+	if !ok {
+		elems = r.Platform.FileList(path)
+		r.Files[path] = elems
+	}
+
+	for index, file := range r.Files[path] {
+		if name == file.Path {
 			if len(file.Content) == 0 {
 				file.Content = download(file.DownloadURI)
-				r.Files[index] = file
+				r.Files[path][index] = file
 			}
 			return file.Content
 		}
 	}
-	panic("No such file")
+
+	log.Println("Could not find file " + name + " in remote repository")
+
+	var nothing []byte
+	return nothing
 }
 
 func download(url string) []byte {
@@ -58,7 +73,8 @@ func New(platform platforms.Platform, uri string) Repository {
 	r := new(Repository)
 	platform.SetURI(uri)
 	r.URI = uri
-	r.Files = platform.FileList("/")
+	r.Files = make(map[string][]platforms.File)
+	r.Platform = platform
 
 	return *r
 }

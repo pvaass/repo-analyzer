@@ -20,13 +20,24 @@ func (p Npm) Detect(repo repository.Repository, resultChannel chan Result) {
 }
 
 func hasNpm(repo repository.Repository) bool {
-	for _, name := range repo.FileNames() {
-		if name == "package.json" {
-			return true
+	return len(getNpm(repo)) > 0
+}
+
+func getNpm(repo repository.Repository) []byte {
+	for _, file := range repo.List("") {
+		if file.Name == "package.json" {
+			return repo.File("package.json")
 		}
 	}
 
-	return false
+	for _, file := range repo.List("app") {
+		if file.Name == "package.json" {
+			return repo.File("app/package.json")
+		}
+	}
+
+	var nothing []byte
+	return nothing
 }
 
 func npmRequiresPackage(file []byte, packageName string) bool {

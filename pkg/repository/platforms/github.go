@@ -45,16 +45,14 @@ func (GitHub) SupportsURI(uri string) bool {
 	return strings.Contains(uri, "github")
 }
 
-func (g GitHub) FileList(path string) []File {
+func (g GitHub) getContentResponse(path string) *http.Response {
 	if g.repoOwner == "" || g.repoName == "" {
 		panic("call GitHub#SetURI before GitHub#FileList: no URI set.")
 	}
-
-	req, err := http.NewRequest("GET", "https://api.github.com/repos/"+g.repoOwner+"/"+g.repoName+"/contents/", nil)
+	req, err := http.NewRequest("GET", "https://api.github.com/repos/"+g.repoOwner+"/"+g.repoName+"/contents/"+path, nil)
 	if err != nil {
 		panic(err)
 	}
-
 	req.Header.Set("Authorization", "token "+g.Token)
 	req.Header.Set("Accept", "application/vnd.github.v3.raw")
 
@@ -62,22 +60,46 @@ func (g GitHub) FileList(path string) []File {
 	if err != nil {
 		log.Panic("Http read error", err)
 	}
-	defer resp.Body.Close()
 
+	return resp
+}
+
+func (g GitHub) parseContentResponse(resp *http.Response) gitHubContents {
+	var c gitHubContents
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Panic("Body read error", err)
 	}
 
-	var c gitHubContents
-	err2 := json.Unmarshal([]byte(body), &c)
-	if err2 != nil {
+	if resp.StatusCode >= 300 {
+		var ghError struct {
+			Message string `json:"message"`
+		}
+		err3 := json.Unmarshal([]byte(body), &ghError)
+		if err3 != nil {
+			log.Panic("Invalid Json Decode", err3)
+		}
+		return c
+	}
+
+	err = json.Unmarshal([]byte(body), &c)
+	if err != nil {
 		log.Panic("Invalid Json Decode", err)
 	}
 
+	return c
+}
+
+func (g GitHub) FileList(path string) []File {
 	var fileList []File
-	for _, element := range c {
-		fileList = append(fileList, File{Name: element.Name, DownloadURI: element.DownloadURL})
+
+	resp := g.getContentResponse(path)
+	defer resp.Body.Close()
+
+	content := g.parseContentResponse(resp)
+
+	for _, element := range content {
+		fileList = append(fileList, File{Name: element.Name, DownloadURI: element.DownloadURL, Path: element.Path})
 	}
 	return fileList
 }

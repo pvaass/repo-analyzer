@@ -18,11 +18,11 @@ type Result struct {
 func Run(repo repository.Repository) []Result {
 
 	if hasComposer(repo) {
-		repo.File("composer.json")
+		getComposer(repo)
 	}
 
 	if hasNpm(repo) {
-		repo.File("package.json")
+		getNpm(repo)
 	}
 
 	resultChannel := make(chan Result)

@@ -18,7 +18,7 @@ func (f NodeFrameworkDetector) Detect(repo repository.Repository, resultChannel 
 		return
 	}
 
-	if npmRequiresPackage(repo.File("package.json"), f.rule.PackageName) {
+	if npmRequiresPackage(getNpm(repo), f.rule.PackageName) {
 		result.Score = 100
 	}
 

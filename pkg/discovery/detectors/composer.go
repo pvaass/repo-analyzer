@@ -20,13 +20,24 @@ func (d Composer) Detect(repo repository.Repository, resultChannel chan Result) 
 }
 
 func hasComposer(repo repository.Repository) bool {
-	for _, name := range repo.FileNames() {
-		if name == "composer.json" {
-			return true
+	return len(getComposer(repo)) > 0
+}
+
+func getComposer(repo repository.Repository) []byte {
+	for _, file := range repo.List("") {
+		if file.Name == "composer.json" {
+			return repo.File("composer.json")
 		}
 	}
 
-	return false
+	for _, file := range repo.List("app") {
+		if file.Name == "composer.json" {
+			return repo.File("app/composer.json")
+		}
+	}
+
+	var nothing []byte
+	return nothing
 }
 
 func composerRequiresPackage(file []byte, packageName string) bool {

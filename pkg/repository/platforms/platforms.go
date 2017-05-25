@@ -12,6 +12,7 @@ type Platform interface {
 
 type File struct {
 	Name        string
+	Path        string
 	DownloadURI string
 	Content     []byte
 }

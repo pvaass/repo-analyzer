@@ -45,8 +45,7 @@ func (r *Repository) File(name string) []byte {
 
 	log.Println("Could not find file " + name + " in remote repository")
 
-	var nothing []byte
-	return nothing
+	return []byte{}
 }
 
 func download(url string) []byte {

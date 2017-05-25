@@ -36,8 +36,7 @@ func getNpm(repo repository.Repository) []byte {
 		}
 	}
 
-	var nothing []byte
-	return nothing
+	return []byte{}
 }
 
 func npmRequiresPackage(file []byte, packageName string) bool {

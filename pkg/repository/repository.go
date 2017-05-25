@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -25,7 +26,7 @@ func (r *Repository) List(path string) []platforms.File {
 	return r.Files[path]
 }
 
-func (r *Repository) File(name string) []byte {
+func (r *Repository) File(name string) ([]byte, error) {
 	path := filepath.Dir(name)
 	elems, ok := r.Files[path]
 	if !ok {
@@ -39,13 +40,11 @@ func (r *Repository) File(name string) []byte {
 				file.Content = download(file.DownloadURI)
 				r.Files[path][index] = file
 			}
-			return file.Content
+			return file.Content, nil
 		}
 	}
 
-	log.Println("Could not find file " + name + " in remote repository")
-
-	return []byte{}
+	return []byte{}, errors.New("Could not find file " + name + " in remote repository")
 }
 
 func download(url string) []byte {

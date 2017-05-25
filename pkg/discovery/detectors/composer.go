@@ -24,20 +24,13 @@ func hasComposer(repo repository.Repository) bool {
 }
 
 func getComposer(repo repository.Repository) []byte {
-	for _, file := range repo.List("") {
-		if file.Name == "composer.json" {
-			return repo.File("composer.json")
-		}
-	}
-
-	for _, file := range repo.List("app") {
-		if file.Name == "composer.json" {
-			return repo.File("app/composer.json")
-		}
-	}
-
-	var nothing []byte
-	return nothing
+	return findFile(
+		repo,
+		[]string{
+			"composer.json",
+			"app/composer.json",
+		},
+	)
 }
 
 func composerRequiresPackage(file []byte, packageName string) bool {

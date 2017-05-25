@@ -24,25 +24,17 @@ func hasNpm(repo repository.Repository) bool {
 }
 
 func getNpm(repo repository.Repository) []byte {
-	for _, file := range repo.List("") {
-		if file.Name == "package.json" {
-			return repo.File("package.json")
-		}
-	}
-
-	for _, file := range repo.List("app") {
-		if file.Name == "package.json" {
-			return repo.File("app/package.json")
-		}
-	}
-
-	return []byte{}
+	return findFile(
+		repo,
+		[]string{
+			"package.json",
+			"app/package.json",
+		},
+	)
 }
 
 func npmRequiresPackage(file []byte, packageName string) bool {
-	var npm struct {
-		Dependencies map[string]string
-	}
+	var npm struct{ Dependencies map[string]string }
 	err := json.Unmarshal(file, &npm)
 	if err != nil {
 		log.Panic("Invalid Json Decode", err)

@@ -43,6 +43,9 @@ func getPlatforms() platforms.Platforms {
 	github := &platforms.GitHub{
 		Token: viper.GetString("github.token"),
 	}
+
+	bitbucket := &platforms.BitBucket{}
 	collection.Add(github)
+	collection.Add(bitbucket)
 	return collection
 }

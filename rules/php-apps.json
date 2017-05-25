@@ -1,0 +1,14 @@
+{
+    "rules": [
+        {
+            "name": "php-app-wordpress",
+            "args": ["wp-config.php"],
+            "strg": "file-exist"
+        },
+        {
+            "name": "php-app-mediawiki",
+            "args": ["README.mediawiki"],
+            "strg": "file-exist"
+        }
+    ]
+}

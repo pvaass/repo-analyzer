@@ -24,6 +24,26 @@
             "name": "php-framework-slim",
             "args": ["slim/slim"],
             "strg": "composer#d"
+        },
+        {
+            "name": "php-framework-workerman",
+            "args": ["workerman/workerman"],
+            "strg": "composer#d"
+        },
+        {
+            "name": "php-framework-october",
+            "args": ["october/system"],
+            "strg": "composer#d"
+        },
+        {
+            "name": "php-framework-october",
+            "args": ["name", "october/october"],
+            "strg": "composer#f"
+        },
+        {
+            "name": "php-framework-yii2",
+            "args": ["yiisoft/yii2"],
+            "strg": "composer#d"
         }
     ]
    

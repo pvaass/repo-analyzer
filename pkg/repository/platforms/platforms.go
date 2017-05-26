@@ -25,7 +25,7 @@ func (ps Platforms) ForURI(uri string) (Platform, error) {
 			return platform, nil
 		}
 	}
-	return ps.collection[0], errors.New("No supported platforms for uri \"" + uri + "\".")
+	return nil, errors.New("No supported platforms for uri \"" + uri + "\".")
 }
 
 func (ps *Platforms) Add(p ...Platform) {
